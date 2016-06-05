@@ -101,7 +101,15 @@
                                 </tr>
                                 <tr>
                                     <td i18n="initialSetupDrawn"></td>
-                                    <td class="bat-mah-drawn">0 mAh</td>
+                                    <td class="bat-mah-drawn">
+                                        <span class="bat-mah-drawn-readonly">0 mAh</span>
+                                        <span class="bat-mah-drawn-editable">
+                                            <label>
+                                                <input type="number" name="mahdrawn" step="1" min="0" max="20000" />
+                                                <span>mAh</span>
+                                            </label>
+                                        </span>    
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td i18n="initialSetupDrawing"></td>

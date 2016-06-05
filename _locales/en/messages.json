@@ -632,6 +632,9 @@
     "configurationCurrent": {
         "message": "Current Sensor"
     },
+    "configurationCurrentMeterType": {
+        "message": "Current Sensor Type"
+    },
     "configurationCurrentScale": {
         "message": "Scale the output voltage to milliamps [1/10th mV/A]"
     },
@@ -1632,5 +1635,12 @@
     },
     "mainHelpLink": {
         "message": "Serial Link Status"
+    },
+    "configurationBatteryCapacityTotal": {
+        "message": "Total Battery Capacity (mAh)"
+    },
+    "configurationBatteryCapacityUsed": {
+        "message": "Used Battery Capacity (mAh)"
     }
+    
 }

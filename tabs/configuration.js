@@ -32,7 +32,11 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
     }
     
     function load_acc_trim() {
-        MSP.send_message(MSP_codes.MSP_ACC_TRIM, false, false, load_arming_config);
+        MSP.send_message(MSP_codes.MSP_ACC_TRIM, false, false, load_currentmeter_config);
+    }
+    
+    function load_currentmeter_config() {
+        MSP.send_message(MSP_codes.MSP_CURRENT_METER_CONFIG, false, false, load_arming_config);
     }
 
     function load_arming_config() {
@@ -73,9 +77,9 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
     //Update Analog/Battery Data
     function load_analog() {
         MSP.send_message(MSP_codes.MSP_ANALOG, false, false, function () {
-	    $('input[name="batteryvoltage"]').val([ANALOG.voltage.toFixed(1)]);
-	    $('input[name="batterycurrent"]').val([ANALOG.amperage.toFixed(2)]);
-            });
+            $('input[name="batteryvoltage"]').val([ANALOG.voltage.toFixed(1)]);
+            $('input[name="batterycurrent"]').val([ANALOG.amperage.toFixed(2)]);
+        });
     }
 
     function load_html() {
@@ -149,6 +153,23 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
             );
         }
 
+        var currentMeterTypes = [
+            'None',
+            'ADC',
+            'Virtual'
+        ];
+        
+        var current_meter_type_e = $('select.current_meter_type');
+        for (var i = 0; i < currentMeterTypes.length; i++) {
+            current_meter_type_e.append('<option value="' + i + '">' + currentMeterTypes[i] + '</option>');
+        }
+
+        current_meter_type_e.change(function () {
+            CURRENT_METER_CONFIG.currentMeterType = parseInt($(this).val());
+        });
+
+        current_meter_type_e.val(CURRENT_METER_CONFIG.currentMeterType);
+        
         function isFeatureEnabled(featureName) {
             for (var i = 0; i < features.length; i++) {
                 if (features[i].name == featureName && bit_check(BF_CONFIG.features, features[i].bit)) {
@@ -399,7 +420,8 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
         $('input[name="currentscale"]').val(BF_CONFIG.currentscale);
         $('input[name="currentoffset"]').val(BF_CONFIG.currentoffset);
         $('input[name="multiwiicurrentoutput"]').prop('checked', MISC.multiwiicurrentoutput);
-
+        $('input[name="batterycapacitytotal"]').val(CURRENT_METER_CONFIG.batteryCapacity);
+        
         //fill 3D
         if (semver.lt(CONFIG.apiVersion, "1.14.0")) {
             $('.tab-configuration .3d').hide();
@@ -483,7 +505,7 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
             MISC.vbatmaxcellvoltage = parseFloat($('input[name="maxcellvoltage"]').val());
             MISC.vbatwarningcellvoltage = parseFloat($('input[name="warningcellvoltage"]').val());
             MISC.vbatscale = parseInt($('input[name="voltagescale"]').val());
-
+            
             BF_CONFIG.currentscale = parseInt($('input[name="currentscale"]').val());
             BF_CONFIG.currentoffset = parseInt($('input[name="currentoffset"]').val());
             MISC.multiwiicurrentoutput = ~~$('input[name="multiwiicurrentoutput"]').is(':checked'); // ~~ boolean to decimal conversion
@@ -494,7 +516,8 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
             if (semver.lt(CONFIG.apiVersion, "1.17.0")) {
                 _3D.deadband3d_throttle = ($('input[name="3ddeadbandthrottle"]').val());
             }
-
+            
+            CURRENT_METER_CONFIG.batteryCapacity = parseInt($('input[name="batterycapacitytotal"]').val());
 
             SENSOR_ALIGNMENT.align_gyro = parseInt(orientation_gyro_e.val());
             SENSOR_ALIGNMENT.align_acc = parseInt(orientation_acc_e.val());
@@ -553,7 +576,11 @@ TABS.configuration.initialize = function (callback, scrollPosition) {
             }
 
             function save_looptime_config() {
-                MSP.send_message(MSP_codes.MSP_SET_LOOP_TIME, MSP.crunch(MSP_codes.MSP_SET_LOOP_TIME), false, save_to_eeprom);
+                MSP.send_message(MSP_codes.MSP_SET_LOOP_TIME, MSP.crunch(MSP_codes.MSP_SET_LOOP_TIME), false, save_currentmeter_config);
+            }
+
+            function save_currentmeter_config() {
+                MSP.send_message(MSP_codes.MSP_SET_CURRENT_METER_CONFIG, MSP.crunch(MSP_codes.MSP_SET_CURRENT_METER_CONFIG), false, save_to_eeprom);
             }
 
             function save_to_eeprom() {

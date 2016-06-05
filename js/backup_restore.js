@@ -94,7 +94,8 @@ function configuration_backup(callback) {
         MSP_codes.MSP_RX_MAP,
         MSP_codes.MSP_BF_CONFIG,
         MSP_codes.MSP_CF_SERIAL_CONFIG,
-        MSP_codes.MSP_LED_STRIP_CONFIG
+        MSP_codes.MSP_LED_STRIP_CONFIG,
+        MSP_codes.MSP_CURRENT_METER_CONFIG
     ];
 
     function update_unique_data_list() {
@@ -130,6 +131,7 @@ function configuration_backup(callback) {
                 configuration.BF_CONFIG = jQuery.extend(true, {}, BF_CONFIG);
                 configuration.SERIAL_CONFIG = jQuery.extend(true, {}, SERIAL_CONFIG);
                 configuration.LED_STRIP = jQuery.extend(true, [], LED_STRIP);
+                configuration.CURRENT_METER_CONFIG = jQuery.extend(true, {}, CURRENT_METER_CONFIG);
                 
                 if (semver.gte(CONFIG.apiVersion, "1.8.0")) {
                     configuration.FC_CONFIG = jQuery.extend(true, {}, FC_CONFIG);
@@ -600,10 +602,21 @@ function configuration_restore(callback) {
                 MISC.gps_ubx_sbas = 0;
             }
             migratedVersion = '1.2.0';
-
             appliedMigrationsCount++;
         }
 
+        if (compareVersions(migratedVersion, '1.2.2')) {
+            
+            if (configuration.CURRENT_METER_CONFIG == undefined) {
+                configuration.CURRENT_METER_CONFIG = {
+                  currentMeterType:      0,
+                  batteryCapacity:       0
+                };
+            }
+            migratedVersion = '1.2.2';
+            appliedMigrationsCount++;
+        }
+        
         if (appliedMigrationsCount > 0) {
             GUI.log(chrome.i18n.getMessage('configMigrationSuccessful', [appliedMigrationsCount]));
         }        
@@ -707,7 +720,8 @@ function configuration_restore(callback) {
                     MSP_codes.MSP_SET_MISC,
                     MSP_codes.MSP_SET_RX_MAP,
                     MSP_codes.MSP_SET_BF_CONFIG,
-                    MSP_codes.MSP_SET_CF_SERIAL_CONFIG
+                    MSP_codes.MSP_SET_CF_SERIAL_CONFIG,
+                    MSP_codes.MSP_SET_CURRENT_METER_CONFIG
                 ];
                 
                 function update_unique_data_list() {
@@ -738,6 +752,7 @@ function configuration_restore(callback) {
                     RX_CONFIG = configuration.RX_CONFIG;
                     FAILSAFE_CONFIG = configuration.FAILSAFE_CONFIG;
                     RXFAIL_CONFIG = configuration.RXFAIL_CONFIG;
+                    CURRENT_METER_CONFIG = configuration.CURRENT_METER_CONFIG;
                 }
 
                 function send_unique_data_item() {

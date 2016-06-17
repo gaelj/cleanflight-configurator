@@ -632,6 +632,9 @@
     "configurationCurrent": {
         "message": "Current Sensor"
     },
+    "configurationCurrentMeterType": {
+        "message": "Current Sensor Type"
+    },
     "configurationCurrentScale": {
         "message": "Scale the output voltage to milliamps [1/10th mV/A]"
     },
@@ -1641,5 +1644,11 @@
     },
         "featureSERVO_TILTTip": {
         "message": "With this feature activated, you can connect a gimbal. Do not activate with motors and battery connected! Motor pins 1-2 are used for gimbal if active! Use pins 3-6 for motors. "
+    },
+    "configurationBatteryCapacityTotal": {
+        "message": "Total Battery Capacity (mAh)"
+    },
+    "configurationBatteryCapacityUsed": {
+        "message": "Used Battery Capacity (mAh)"
     }
 }

@@ -13,6 +13,8 @@ var MSP_codes = {
     MSP_SET_CHANNEL_FORWARDING:  33,
     MSP_MODE_RANGES:             34,
     MSP_SET_MODE_RANGE:          35,
+    MSP_CURRENT_METER_CONFIG:   40,
+    MSP_SET_CURRENT_METER_CONFIG:41,
     MSP_RX_CONFIG:               44,
     MSP_SET_RX_CONFIG:           45,
     MSP_LED_COLORS:              46,
@@ -454,6 +456,20 @@ var MSP = {
                 MISC.vbatmaxcellvoltage = data.getUint8(offset++, 1) / 10; // 10-50
                 MISC.vbatwarningcellvoltage = data.getUint8(offset++, 1) / 10; // 10-50
                 break;
+            case MSP_codes.MSP_CURRENT_METER_CONFIG:
+                var offset = 0;
+                // CURRENT_METER_CONFIG.currentMeterScale = data.getUint16(offset, 1);
+                offset += 2;
+                // CURRENT_METER_CONFIG.currentMeterOffset = data.getUint16(offset, 1);
+                offset += 2;
+                CURRENT_METER_CONFIG.currentMeterType = data.getUint8(offset++);
+                CURRENT_METER_CONFIG.batteryCapacity = data.getUint16(offset, 1);
+                offset += 2;
+                if (semver.gte(CONFIG.apiVersion, "1.20.0")) {
+                    ANALOG.mAhdrawn = data.getUint16(offset, 1);
+                    offset += 2;
+                }
+                break;
             case MSP_codes.MSP_3D:
                 var offset = 0;
                 _3D.deadband3d_low = data.getUint16(offset, 1);
@@ -595,6 +611,9 @@ var MSP = {
             case MSP_codes.MSP_SET_MISC:
                 console.log('MISC Configuration saved');
                 break;
+            case MSP_codes.MSP_SET_CURRENT_METER_CONFIG:
+                console.log('Current meter config saved');
+                break;
             case MSP_codes.MSP_RESET_CONF:
                 console.log('Settings Reset');
                 break;
@@ -671,6 +690,7 @@ var MSP = {
                 BF_CONFIG.currentoffset = data.getUint16(14, 1);
                 break;
             case MSP_codes.MSP_SET_BF_CONFIG:
+                console.log('BF config saved');
                 break;
             case MSP_codes.MSP_SET_REBOOT:
                 console.log('Reboot request accepted');
@@ -1368,7 +1388,19 @@ MSP.crunch = function (code) {
             buffer.push(Math.round(MISC.vbatmaxcellvoltage * 10));
             buffer.push(Math.round(MISC.vbatwarningcellvoltage * 10));
             break;
-
+        case MSP_codes.MSP_SET_CURRENT_METER_CONFIG:
+            buffer.push(lowByte(BF_CONFIG.currentscale));
+            buffer.push(highByte(BF_CONFIG.currentscale));
+            buffer.push(lowByte(BF_CONFIG.currentoffset));
+            buffer.push(highByte(BF_CONFIG.currentoffset));
+            buffer.push(CURRENT_METER_CONFIG.currentMeterType);
+            buffer.push(lowByte(CURRENT_METER_CONFIG.batteryCapacity));
+            buffer.push(highByte(CURRENT_METER_CONFIG.batteryCapacity));
+            if (semver.gte(CONFIG.apiVersion, "1.20.0")) {
+                buffer.push(lowByte(ANALOG.mAhdrawn));
+                buffer.push(highByte(ANALOG.mAhdrawn));
+            }
+            break;
         case MSP_codes.MSP_SET_RX_CONFIG:
             buffer.push(RX_CONFIG.serialrx_provider);
             buffer.push(lowByte(RX_CONFIG.maxcheck));

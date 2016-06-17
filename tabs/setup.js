@@ -21,7 +21,11 @@ TABS.setup.initialize = function (callback) {
     }
 
     function load_config() {
-        MSP.send_message(MSP_codes.MSP_BF_CONFIG, false, false, load_misc_data);
+        MSP.send_message(MSP_codes.MSP_BF_CONFIG, false, false, load_current_meter_config);
+    }
+
+    function load_current_meter_config() {
+        MSP.send_message(MSP_codes.MSP_CURRENT_METER_CONFIG, false, false, load_misc_data);
     }
 
     function load_misc_data() {
@@ -44,12 +48,20 @@ TABS.setup.initialize = function (callback) {
 
             GUI.log(chrome.i18n.getMessage('initialSetupBackupAndRestoreApiVersion', [CONFIG.apiVersion, CONFIGURATOR.backupRestoreMinApiVersionAccepted]));
         }
+        
+
+        if (semver.lt(CONFIG.apiVersion, "1.20.0")) {
+            $('.bat-mah-drawn-editable').hide();
+        } else {
+            $('.bat-mah-drawn-readonly').hide();
+        }
+        
         // initialize 3D
         self.initialize3D();
 
-		// set roll in interactive block
+	// set roll in interactive block
         $('span.roll').text(chrome.i18n.getMessage('initialSetupAttitude', [0]));
-		// set pitch in interactive block
+	// set pitch in interactive block
         $('span.pitch').text(chrome.i18n.getMessage('initialSetupAttitude', [0]));
         // set heading in interactive block
         $('span.heading').text(chrome.i18n.getMessage('initialSetupAttitude', [0]));
@@ -155,10 +167,13 @@ TABS.setup.initialize = function (callback) {
                 TABS.setup.initialize();
             });
         });
+        
+
 
         // cached elements
         var bat_voltage_e = $('.bat-voltage'),
-            bat_mah_drawn_e = $('.bat-mah-drawn'),
+            bat_mah_drawn_ro_e = $('.bat-mah-drawn-readonly'),
+            bat_mah_drawn_rw_e = $('input[name="mahdrawn"]'),
             bat_mah_drawing_e = $('.bat-mah-drawing'),
             rssi_e = $('.rssi'),
             gpsFix_e = $('.gpsFix'),
@@ -170,12 +185,27 @@ TABS.setup.initialize = function (callback) {
             pitch_e = $('dd.pitch'),
             heading_e = $('dd.heading');
 
+
+        bat_mah_drawn_rw_e.change(function () {
+            var madParsed = parseInt($(this).val());
+            if (!isNaN(madParsed)) {
+                ANALOG.mAhdrawn = madParsed;
+                
+                MSP.send_message(MSP_codes.MSP_SET_CURRENT_METER_CONFIG, MSP.crunch(MSP_codes.MSP_SET_CURRENT_METER_CONFIG), false, function () {
+                    GUI.log("mAhdrawn set to " + ANALOG.mAhdrawn);
+                });
+            }
+        });
+        
+
         function get_slow_data() {
             MSP.send_message(MSP_codes.MSP_STATUS);
 
             MSP.send_message(MSP_codes.MSP_ANALOG, false, false, function () {
                 bat_voltage_e.text(chrome.i18n.getMessage('initialSetupBatteryValue', [ANALOG.voltage]));
-                bat_mah_drawn_e.text(chrome.i18n.getMessage('initialSetupBatteryMahValue', [ANALOG.mAhdrawn]));
+                bat_mah_drawn_ro_e.text(chrome.i18n.getMessage('initialSetupBatteryMahValue', [ANALOG.mAhdrawn]));
+                if (!bat_mah_drawn_rw_e.is(":focus"))
+                    bat_mah_drawn_rw_e.val([ANALOG.mAhdrawn]);
                 bat_mah_drawing_e.text(chrome.i18n.getMessage('initialSetupBatteryAValue', [ANALOG.amperage.toFixed(2)]));
                 rssi_e.text(chrome.i18n.getMessage('initialSetupRSSIValue', [((ANALOG.rssi / 1023) * 100).toFixed(0)]));
             });

@@ -37,6 +37,7 @@ var SENSOR_ALIGNMENT;
 var RX_CONFIG;
 var FAILSAFE_CONFIG;
 var RXFAIL_CONFIG;
+var CURRENT_METER_CONFIG;
 
 var FC = {
     resetState: function() {
@@ -103,7 +104,7 @@ var FC = {
             throttle_MID:    0,
             throttle_EXPO:   0,
             dynamic_THR_breakpoint: 0,
-        	RC_YAW_EXPO:         0
+            RC_YAW_EXPO:         0
         };
         
         AUX_CONFIG = [];
@@ -191,6 +192,14 @@ var FC = {
             vbatmincellvoltage:     0,
             vbatmaxcellvoltage:     0,
             vbatwarningcellvoltage: 0
+        };
+
+        CURRENT_METER_CONFIG = {
+            // currentMeterScale:  0, // = sbufReadU16(src);
+            // currentMeterOffset: 0, // = sbufReadU16(src);
+            currentMeterType:   0, // = sbufReadU8(src);
+            batteryCapacity:    0, // = sbufReadU16(src);
+            // mAhdrawn:           0, // = (int32_t)sbufReadU16(src); // 1.20.0
         };
         
         _3D = {

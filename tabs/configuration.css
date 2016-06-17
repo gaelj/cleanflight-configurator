@@ -104,10 +104,16 @@
     margin-left: 0px;
 }
 
+.tab-configuration .current .line {
+    clear: left;
+    
+}
+
 .tab-configuration .gps .line {
     clear: left;
 }
 
+.tab-configuration .current select,
 .tab-configuration .gps select {
     float: left;
     width: 100px;
@@ -116,6 +122,11 @@
     border: 1px solid silver;
 }
 
+.tab-configuration .current select {
+    width: 65px;
+}
+
+.tab-configuration .current span,
 .tab-configuration .gps span {
     line-height: 20px;
 }
@@ -202,6 +213,7 @@
     border-bottom: 1px solid #ddd;
 }
 
+.tab-configuration .current .line,
 .tab-configuration .number,
 .tab-configuration .select
  {
@@ -246,24 +258,19 @@
 }
 
 .tab-configuration .rssi .gui_box, .tab-configuration .system .gui_box {
-    min-height: 145px;
     float: left;
 }
 
 .tab-configuration .mixer .gui_box, .tab-configuration .motorstop .gui_box {
-    min-height: 290px;
     float: left;
 }
 
 .tab-configuration .board .gui_box, .tab-configuration .acc .gui_box {
-    min-height: 137px;
     float: left;
 }
 
 .tab-configuration .gps .gui_box, .tab-configuration .other .gui_box {
-    min-height: 355px;
     float: left;
-    margin-bottom: 10px;
 }
 
 .tab-configuration .current .gui_box {
@@ -271,7 +278,6 @@
 }
 
 .tab-configuration .rxprovider {
-    min-height: 214px;
 }
 
 .tab-configuration .current td:nth-child(2) {
@@ -472,19 +478,15 @@
         margin: 0 0 10px 15px;
     }
     .tab-configuration .rssi .gui_box, .tab-configuration .system .gui_box {
-        min-height: 145px;
         float: left;
     }
     .tab-configuration .mixer .gui_box, .tab-configuration .motorstop .gui_box {
-        min-height: 290px;
         float: left;
     }
     .tab-configuration .board .gui_box, .tab-configuration .acc .gui_box {
-        min-height: 137px;
         float: left;
     }
     .tab-configuration .gps .gui_box, .tab-configuration .other .gui_box {
-        min-height: 355px;
         float: left;
     }
     .tab-configuration .current .gui_box {

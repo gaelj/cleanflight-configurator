@@ -461,7 +461,7 @@
         "message": "Don't spin the motors when armed"
     },
     "featureSERVO_TILT": {
-        "message": "Servo gimbal"
+        "message": "Servo gimbal (uses motor pins 1-2)"
     },
     "featureSOFTSERIAL": {
         "message": "Enable CPU based serial ports"
@@ -1443,7 +1443,7 @@
     },
 
     "ledStripHelp": {
-        "message": "The flight controller can control colors and effects of individual LEDs on a strip.<br />Configure LEDs on the grid, configure wiring order then attach LEDs on your aircraft according to grid positions."
+        "message": "The flight controller can control colors and effects of individual LEDs on a strip.<br />Configure LEDs on the grid, configure wiring order then attach LEDs on your aircraft according to grid positions.<br />Double-click on a color to edit the HSV values."
     },
     "ledStripButtonSave": {
         "message": "Save"
@@ -1635,5 +1635,11 @@
     },
     "mainHelpLink": {
         "message": "Serial Link Status"
+    },
+    "configHelp3": {
+        "message": "Configure port scenario first before selecting a serial-based receiver."
+    },
+        "featureSERVO_TILTTip": {
+        "message": "With this feature activated, you can connect a gimbal. Do not activate with motors and battery connected! Motor pins 1-2 are used for gimbal if active! Use pins 3-6 for motors. "
     }
 }

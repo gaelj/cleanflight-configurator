@@ -58,6 +58,8 @@ TABS.setup.initialize = function (callback) {
         // check if we have magnetometer
         if (!bit_check(CONFIG.activeSensors, 2)) {
             $('a.calibrateMag').addClass('disabled');
+            $('default_btn').addClass('disabled');
+
         }
 
         self.initializeInstruments();
@@ -253,7 +255,8 @@ TABS.setup.initialize3D = function (compatibility) {
     // Temporary workaround for 'custom' model until akfreak's custom model is merged.
     var useLegacyCustomModel = false;
     if (model_file == 'custom') {
-        model_file = 'fallback';
+    //  model_file = 'fallback';
+        model_file = 'quad_x';
         useLegacyCustomModel = true;
     }
 
